@@ -2,6 +2,7 @@ package entity
 
 import (
 	"context"
+	"fmt"
 	"github.com/google/uuid"
 	"time"
 )
@@ -24,6 +25,7 @@ type Entity struct {
 type StoreEntityInterface interface {
 	Create(ctx context.Context, entity Entity) (*Entity, error)
 	Read(ctx context.Context, ID uuid.UUID) (*Entity, error)
+	ReadByCellID(ctx context.Context)
 	Neighbours(ctx context.Context, CellID uint64) (chan Entity, error)
 }
 
@@ -35,4 +37,12 @@ func NewEntities(entityStore StoreEntityInterface) *Entities {
 	return &Entities{
 		entityStore: entityStore,
 	}
+}
+
+func (es *Entities) CreateEntity(ctx context.Context, e Entity) (*Entity, error) {
+	newEntity, err := es.CreateEntity(ctx, e)
+	if err != nil {
+		return nil, fmt.Errorf("create entity error: %w", err)
+	}
+	return newEntity, nil
 }
