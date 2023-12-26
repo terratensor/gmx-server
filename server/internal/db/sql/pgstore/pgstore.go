@@ -3,7 +3,6 @@ package pgstore
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
 	"github.com/google/uuid"
 	"github.com/terratensor/gmx-server/server/internal/app/repos/entity"
 	"time"
@@ -12,19 +11,19 @@ import (
 var _ entity.StoreEntityInterface = &Entities{}
 
 type DBPgEntity struct {
-	ID              uuid.UUID  `db:"id"`
-	Filename        string     `db:"filename"`
-	Name            string     `db:"name"`
-	Description     string     `db:"description"`
-	Longitude       float64    `db:"longitude"`
-	Latitude        float64    `db:"latitude"`
-	Height          float64    `db:"height"`
-	DescriptionJson string     `db:"description_json"`
-	CellID          uint64     `db:"cell_id"`
-	Geohash         string     `db:"geohash"`
-	CreatedAt       time.Time  `db:"created_at"`
-	UpdatedAt       time.Time  `db:"updated_at"`
-	DeletedAt       *time.Time `db:"deleted_at"`
+	ID              uuid.UUID              `db:"id"`
+	Filename        string                 `db:"filename"`
+	Name            string                 `db:"name"`
+	Description     string                 `db:"description"`
+	Longitude       float64                `db:"longitude"`
+	Latitude        float64                `db:"latitude"`
+	Height          float64                `db:"height"`
+	DescriptionJson map[string]interface{} `db:"description_json"`
+	CellID          uint64                 `db:"cell_id"`
+	Geohash         string                 `db:"geohash"`
+	CreatedAt       time.Time              `db:"created_at"`
+	UpdatedAt       time.Time              `db:"updated_at"`
+	DeletedAt       *time.Time             `db:"deleted_at"`
 }
 
 type Entities struct {
@@ -87,8 +86,8 @@ func (es *Entities) ReadByCellID(ctx context.Context, cellID uint64) (*entity.En
 		}
 	}
 
-	var descJsonMap map[string]interface{}
-	json.Unmarshal([]byte(dbe.DescriptionJson), &descJsonMap)
+	//var descJsonMap map[string]interface{}
+	//json.Unmarshal([]byte(dbe.DescriptionJson), &descJsonMap)
 
 	return &entity.Entity{
 		ID:              dbe.ID,
@@ -98,7 +97,7 @@ func (es *Entities) ReadByCellID(ctx context.Context, cellID uint64) (*entity.En
 		Longitude:       dbe.Longitude,
 		Latitude:        dbe.Latitude,
 		Height:          dbe.Height,
-		DescriptionJson: descJsonMap,
+		DescriptionJson: dbe.DescriptionJson,
 		CellID:          dbe.CellID,
 		Geohash:         dbe.Geohash,
 		CreatedAt:       dbe.CreatedAt,
