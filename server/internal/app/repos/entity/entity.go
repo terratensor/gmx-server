@@ -15,18 +15,19 @@ type Entity struct {
 	Longitude       float64
 	Latitude        float64
 	Height          float64
-	DescriptionJson struct{}
+	DescriptionJson map[string]interface{}
 	CellID          uint64
 	Geohash         string
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 }
 
+// StoreEntityInterface
+// Create(ctx context.Context, entity Entity) (*Entity, error)
+// Read(ctx context.Context, ID uuid.UUID) (*Entity, error)
+// Neighbours(ctx context.Context, cellID uint64) (chan Entity, error)
 type StoreEntityInterface interface {
-	Create(ctx context.Context, entity Entity) (*Entity, error)
-	Read(ctx context.Context, ID uuid.UUID) (*Entity, error)
-	ReadByCellID(ctx context.Context)
-	Neighbours(ctx context.Context, CellID uint64) (chan Entity, error)
+	ReadByCellID(ctx context.Context, cellID uint64) (*Entity, error)
 }
 
 type Entities struct {
@@ -39,10 +40,10 @@ func NewEntities(entityStore StoreEntityInterface) *Entities {
 	}
 }
 
-func (es *Entities) CreateEntity(ctx context.Context, e Entity) (*Entity, error) {
-	newEntity, err := es.CreateEntity(ctx, e)
+func (es *Entities) Read(ctx context.Context, cellID uint64) (*Entity, error) {
+	entity, err := es.entityStore.ReadByCellID(ctx, cellID)
 	if err != nil {
-		return nil, fmt.Errorf("create entity error: %w", err)
+		return nil, fmt.Errorf("read entity error %w", err)
 	}
-	return newEntity, nil
+	return entity, err
 }
