@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/google/uuid"
+	_ "github.com/jackc/pgx/v4/stdlib" // Postgresql driver
 	"github.com/terratensor/gmx-server/server/internal/app/repos/entity"
 	"time"
 )
