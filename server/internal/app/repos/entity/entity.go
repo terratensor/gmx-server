@@ -28,6 +28,7 @@ type Entity struct {
 // Neighbours(ctx context.Context, cellID uint64) (chan Entity, error)
 type StoreEntityInterface interface {
 	ReadByCellID(ctx context.Context, cellID uint64) (*Entity, error)
+	//Neighbours(ctx context.Context, cellID uint64) (chan Entity, error)
 }
 
 type Entities struct {

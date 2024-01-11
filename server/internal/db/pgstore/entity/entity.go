@@ -1,15 +1,18 @@
-package pgstore
+package entity
 
 import (
 	"context"
 	"database/sql"
 	"github.com/google/uuid"
-	_ "github.com/jackc/pgx/v4/stdlib" // Postgresql driver
 	"github.com/terratensor/gmx-server/server/internal/app/repos/entity"
 	"time"
 )
 
 var _ entity.StoreEntityInterface = &Entities{}
+
+type Entities struct {
+	db *sql.DB
+}
 
 type DBPgEntity struct {
 	ID              uuid.UUID              `db:"id"`
@@ -27,28 +30,10 @@ type DBPgEntity struct {
 	DeletedAt       *time.Time             `db:"deleted_at"`
 }
 
-type Entities struct {
-	db *sql.DB
-}
-
-func NewEntities(dsn string) (*Entities, error) {
-	db, err := sql.Open("pgx", dsn)
-	if err != nil {
-		return nil, err
-	}
-	err = db.Ping()
-	if err != nil {
-		db.Close()
-		return nil, err
-	}
-	ls := &Entities{
+func NewEntities(db *sql.DB) *Entities {
+	return &Entities{
 		db: db,
 	}
-	return ls, nil
-}
-
-func (es *Entities) Close() {
-	es.db.Close()
 }
 
 func (es *Entities) ReadByCellID(ctx context.Context, cellID uint64) (*entity.Entity, error) {

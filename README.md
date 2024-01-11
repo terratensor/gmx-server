@@ -1,2 +1,2 @@
-# gmx-server
+# geomatrix-api
 Geomatrix api server
