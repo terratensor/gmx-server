@@ -27,19 +27,25 @@ func main() {
 	log.Debug("logger debug mode enabled")
 	//ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 
-	username := cfg.Storage.User
-	password := cfg.Storage.Password
-	database := cfg.Storage.Db
-	host := cfg.Storage.Host
-	port := cfg.Storage.Port
-	dsn := fmt.Sprintf("postgresql://%v:%v@%v:%v/%v?sslmode=disable", username, password, host, port, database)
-
+	dsn := makeDsn(cfg)
 	_, err := pgstore.NewPgStore(dsn)
 	if err != nil {
 		log.Error("failed to initialize storage", sl.Err(err))
 		os.Exit(1)
 	}
 
+}
+
+func makeDsn(cfg *config.Config) string {
+	dsn := fmt.Sprintf(
+		"postgresql://%v:%v@%v:%v/%v?sslmode=disable",
+		cfg.Storage.User,
+		cfg.Storage.Password,
+		cfg.Storage.Host,
+		cfg.Storage.Port,
+		cfg.Storage.Db,
+	)
+	return dsn
 }
 
 func setupLogger(env string) *slog.Logger {
