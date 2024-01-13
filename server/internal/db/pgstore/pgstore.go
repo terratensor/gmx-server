@@ -6,7 +6,7 @@ import (
 )
 
 type PGStore struct {
-	db *sql.DB
+	DB *sql.DB
 }
 
 func NewPgStore(dsn string) (*PGStore, error) {
@@ -20,11 +20,11 @@ func NewPgStore(dsn string) (*PGStore, error) {
 		return nil, err
 	}
 	ls := &PGStore{
-		db: db,
+		DB: db,
 	}
 	return ls, nil
 }
 
 func (pgs *PGStore) Close() {
-	pgs.db.Close()
+	pgs.DB.Close()
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/terratensor/gmx-server/server/internal/app/starter"
 	"github.com/terratensor/gmx-server/server/internal/config"
 	"github.com/terratensor/gmx-server/server/internal/db/pgstore"
 	"github.com/terratensor/gmx-server/server/internal/lib/logger/handlers/slogpretty"
@@ -28,11 +29,13 @@ func main() {
 	//ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 
 	dsn := makeDsn(cfg)
-	_, err := pgstore.NewPgStore(dsn)
+	pgs, err := pgstore.NewPgStore(dsn)
 	if err != nil {
 		log.Error("failed to initialize storage", sl.Err(err))
 		os.Exit(1)
 	}
+
+	_ = starter.NewApp(pgs)
 
 }
 
