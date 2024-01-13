@@ -1,4 +1,4 @@
-package entity
+package pgentity
 
 import (
 	"context"
