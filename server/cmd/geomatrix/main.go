@@ -28,6 +28,14 @@ func main() {
 	log.Debug("logger debug mode enabled")
 	//ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 
+	store := initStore(log, cfg)
+	_ = starter.NewApp(store)
+
+}
+
+// initStore initializes storage
+// тут нужен интерфейс если будут другие хранилища
+func initStore(log *slog.Logger, cfg *config.Config) *pgstore.PGStore {
 	dsn := makeDsn(cfg)
 	pgs, err := pgstore.NewPgStore(dsn)
 	if err != nil {
@@ -35,8 +43,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	_ = starter.NewApp(pgs)
-
+	return pgs
 }
 
 func makeDsn(cfg *config.Config) string {
